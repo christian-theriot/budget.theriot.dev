@@ -4,6 +4,7 @@ import cors from "cors";
 export class App {
   constructor(public server: Express) {
     this.server.use(json());
+    this.server.disable("x-powered-by");
     this.server.use(
       cors({
         origin: (o, done) => {
