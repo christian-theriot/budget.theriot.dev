@@ -5,7 +5,7 @@ on:
     branches:
       - main
 
-job:
+jobs:
   frontend-tests:
     runs-on: ubuntu-latest
     steps:
