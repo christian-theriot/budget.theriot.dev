@@ -1,6 +1,15 @@
 import { App } from "./app";
 import express from "express";
+import { Database } from "./services";
 
-const app = new App(express());
+const db = new Database();
 
-app.listen(8080);
+db.setup()
+  .then(() => {
+    const app = new App(express(), db);
+
+    app.listen(8080);
+  })
+  .catch((err) => {
+    console.error(err);
+  });

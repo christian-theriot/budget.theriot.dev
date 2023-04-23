@@ -1,20 +1,32 @@
-import { Express, Request, Response, json, NextFunction } from "express";
+import {
+  Express,
+  Request,
+  Response,
+  json,
+  NextFunction,
+  urlencoded,
+} from "express";
 import cors from "cors";
 import { config } from "dotenv";
-import { authenticate } from "../api/user";
+import { UserService } from "../api";
+import session from "express-session";
+import { Database } from "../services";
 
 config();
 
 export class App {
-  constructor(public server: Express) {
+  constructor(public server: Express, public database: Database) {
     this.server.use(json());
+    this.server.use(urlencoded({ extended: true }));
     this.server.disable("x-powered-by");
     this.server.use(
       cors({
         origin: (o, done) => {
           if (
             o === undefined ||
-            JSON.parse(process.env["ALLOWED_ORIGINS"] ?? "[]").includes(o)
+            (
+              JSON.parse(`${process.env["ALLOWED_ORIGINS"]}`) as string[]
+            ).includes(o)
           ) {
             return done(null, o);
           }
@@ -26,7 +38,8 @@ export class App {
 
     this.enableHealthCheck();
     this.enableLocalhost();
-    this.enableGoogleSignIn();
+    this.enableUserSessions();
+    UserService.enableGoogleSignIn(this.server);
     this.catchErrors();
   }
 
@@ -42,18 +55,19 @@ export class App {
     });
   }
 
-  private enableGoogleSignIn() {
-    this.server.post("/api/auth/login", async (req, res) => {
-      const { authenticated, payload } = await authenticate(
-        req.body.credential
-      );
-
-      if (!authenticated) {
-        res.status(401).send("Unauthorized");
-      } else {
-        res.status(200).send(payload);
-      }
-    });
+  private enableUserSessions() {
+    this.server.use(
+      session({
+        secret: `${process.env["SESSION_SECRET"]}`,
+        cookie: {
+          maxAge: 1000 * 60 * 60, //ms
+          sameSite: "lax",
+        },
+        resave: false,
+        saveUninitialized: true,
+        store: this.database.store,
+      })
+    );
   }
 
   private catchErrors() {
