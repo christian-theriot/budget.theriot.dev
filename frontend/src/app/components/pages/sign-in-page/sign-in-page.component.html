@@ -1,0 +1,16 @@
+<ng-container *ngIf="user; else GENERIC_WARM_WELCOME">
+  <div>Welcome!</div>
+  <div>Would you like to give your account a nickname?</div>
+  <div>
+    If not, we will use {{ user.email }} by default. Only you will be able to
+    see this
+  </div>
+</ng-container>
+<ng-template #GENERIC_WARM_WELCOME>
+  <div>
+    Sorry, if you would like a personalized experience, you will need to
+    authenticate with your Google Account. This is just to confirm that you are
+    not a robot, no personal info other than your email will be used to create
+    or connect to your account.
+  </div>
+</ng-template>
