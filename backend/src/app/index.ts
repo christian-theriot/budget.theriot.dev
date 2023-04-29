@@ -11,6 +11,7 @@ import { config } from "dotenv";
 import { UserService } from "../api";
 import session from "express-session";
 import { Database } from "../services";
+import rateLimit from "express-rate-limit";
 
 config();
 
@@ -40,6 +41,13 @@ export class App {
     this.enableHealthCheck();
     this.enableLocalhost();
     this.enableUserSessions();
+    this.server.use(
+      rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 100,
+        standardHeaders: true,
+      })
+    );
     UserService.enableGoogleSignIn(this.server);
     this.catchErrors();
   }
@@ -57,7 +65,8 @@ export class App {
   }
 
   private enableUserSessions() {
-    this.server.set("trust proxy", 1);
+    this.server.set("trust proxy", parseInt(`${process.env["NUM_PROXIES"]}`));
+    this.server.get("/ip", (req, res) => res.status(200).send(req.ip));
     this.server.use(
       session({
         secret: `${process.env["SESSION_SECRET"]}`,

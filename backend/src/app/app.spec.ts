@@ -57,6 +57,10 @@ describe("App module", () => {
     );
   });
 
+  it("can query user's ip", async () => {
+    await request(app.server).get("/ip").expect(200).expect("::ffff:127.0.0.1");
+  });
+
   it("provides an auth login route at POST /api/auth/login", async () => {
     const date = Math.floor((new Date().getTime() + 1000 * 60 * 60) / 1000);
     jest

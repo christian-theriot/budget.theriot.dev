@@ -71,3 +71,4 @@ jobs:
           ALLOWED_ORIGINS: "${{ secrets.ALLOWED_ORIGINS }}"
           SESSION_SECRET: secret
           ENVIRONMENT: test
+          NUM_PROXIES: 1
