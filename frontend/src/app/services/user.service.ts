@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpXsrfTokenExtractor } from '@angular/common/http';
 import { ElementRef, Injectable, OnDestroy } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError, of, Subscription } from 'rxjs';
@@ -11,7 +11,8 @@ export class UserService implements OnDestroy {
   constructor(
     private http: HttpClient,
     private eventService: EventService,
-    private cookieService: CookieService
+    private cookieService: CookieService,
+    private csrfTokenExtractor: HttpXsrfTokenExtractor
   ) {}
 
   ngOnDestroy(): void {
@@ -97,8 +98,8 @@ export class UserService implements OnDestroy {
     this.sub?.unsubscribe();
     this.sub = this.http
       .post<User>(
-        'https://localhost:8443/api/auth/login',
-        { credential },
+        '//localhost:8443/api/auth/login',
+        { credential, _csrf: this.csrfTokenExtractor.getToken() },
         { withCredentials: true }
       )
       .subscribe({

@@ -12,6 +12,7 @@ import { UserService } from "../api";
 import session from "express-session";
 import { Database } from "../services";
 import rateLimit from "express-rate-limit";
+import csurf from "csurf";
 
 config();
 
@@ -48,6 +49,12 @@ export class App {
         standardHeaders: true,
       })
     );
+    this.server.use(csurf(), (req, res, next) => {
+      res.setHeader("X-XSRF-TOKEN", req.csrfToken());
+      res.cookie("XSRF-TOKEN", req.csrfToken());
+
+      next();
+    });
     UserService.enableGoogleSignIn(this.server);
     this.catchErrors();
   }
