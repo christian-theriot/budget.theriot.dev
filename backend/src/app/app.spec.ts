@@ -57,6 +57,10 @@ describe("App module", () => {
     );
   });
 
+  it("can query user's ip", async () => {
+    await request(app.server).get("/ip").expect(200).expect("::ffff:127.0.0.1");
+  });
+
   it("provides an auth login route at POST /api/auth/login", async () => {
     const date = Math.floor((new Date().getTime() + 1000 * 60 * 60) / 1000);
     jest
@@ -72,29 +76,40 @@ describe("App module", () => {
       }));
 
     await request(app.server)
-      .post("/api/auth/login")
-      .send({ credential: "test" })
-      .expect(200)
-      .expect({ id: 1, email: "test@gmail.com" })
+      .get("/api/auth/prelogin")
       .then(async (res) => {
         await request(app.server)
-          .get("/api/auth/prelogin")
-          .set("Cookie", res.header["set-cookie"])
-          .expect(200)
-          .expect({ id: 1, email: "test@gmail.com" });
-
-        jest.spyOn(console, "error").mockImplementationOnce(() => {});
-
-        await request(app.server)
           .post("/api/auth/login")
-          .set("Cookie", res.header["set-cookie"])
-          .send({ credential: "test" })
-          .expect(401)
-          .expect("Unauthorized");
+          .set("Cookie", res.headers["set-cookie"])
+          .send({
+            credential: "test",
+            _csrf: res.headers["x-xsrf-token"],
+          })
+          .expect(200)
+          .expect({ id: 1, email: "test@gmail.com" })
+          .then(async (res) => {
+            await request(app.server)
+              .get("/api/auth/prelogin")
+              .set("Cookie", res.headers["set-cookie"])
+              .expect(200)
+              .expect({ id: 1, email: "test@gmail.com" });
 
-        expect(console.error).toHaveBeenCalledWith(
-          new Error("Wrong number of segments in token: test")
-        );
+            jest.spyOn(console, "error").mockImplementationOnce(() => {});
+
+            await request(app.server)
+              .post("/api/auth/login")
+              .set("Cookie", res.headers["set-cookie"])
+              .send({
+                credential: "test",
+                _csrf: res.headers["x-xsrf-token"],
+              })
+              .expect(401)
+              .expect("Unauthorized");
+
+            expect(console.error).toHaveBeenCalledWith(
+              new Error("Wrong number of segments in token: test")
+            );
+          });
       });
   });
 
