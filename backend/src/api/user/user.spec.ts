@@ -1,4 +1,3 @@
-import { OAuth2Client } from "google-auth-library";
 import { UserService } from ".";
 
 describe("User Service", () => {

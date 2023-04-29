@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockComponent } from 'src/app/spec/mock';
 
-import { HomePageComponent } from './home-page.component';
+import { ProfilePageComponent } from './profile-page.component';
 
-describe('HomePageComponent', () => {
-  let component: HomePageComponent;
-  let fixture: ComponentFixture<HomePageComponent>;
+describe('ProfilePageComponent', () => {
+  let component: ProfilePageComponent;
+  let fixture: ComponentFixture<ProfilePageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomePageComponent, MockComponent('app-header')],
+      declarations: [ProfilePageComponent, MockComponent('app-header')],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomePageComponent);
+    fixture = TestBed.createComponent(ProfilePageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

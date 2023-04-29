@@ -21,6 +21,7 @@ export class App {
     this.server.disable("x-powered-by");
     this.server.use(
       cors({
+        credentials: true,
         origin: (o, done) => {
           if (
             o === undefined ||
@@ -56,12 +57,14 @@ export class App {
   }
 
   private enableUserSessions() {
+    this.server.set("trust proxy", 1);
     this.server.use(
       session({
         secret: `${process.env["SESSION_SECRET"]}`,
         cookie: {
           maxAge: 1000 * 60 * 60, //ms
-          sameSite: "lax",
+          sameSite: "none",
+          secure: process.env["ENVIRONMENT"] === "production",
         },
         resave: false,
         saveUninitialized: true,

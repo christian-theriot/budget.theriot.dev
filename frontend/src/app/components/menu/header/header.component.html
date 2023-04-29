@@ -1,0 +1,49 @@
+<nav>
+  <span><a routerLink="/">Budget | theriot.dev</a></span>
+  <ul *ngIf="user">
+    <li>
+      <span>Money</span>
+      <ul>
+        <li>
+          <span>Accounts</span>
+          <ul>
+            <li><a routerLink="/new/account">New</a></li>
+            <li><a routerLink="/view/accounts">View</a></li>
+          </ul>
+        </li>
+        <li>
+          <span>Budgets</span>
+          <ul>
+            <li><a routerLink="/new/budget">New</a></li>
+            <li><a routerLink="/view/budgets">View</a></li>
+          </ul>
+        </li>
+        <li>
+          <span>Transactions</span>
+          <ul>
+            <li><a routerLink="/new/transaction">New</a></li>
+            <li><a routerLink="/view/transactions">View</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <ul>
+    <li>
+      <span>Profile</span>
+      <ul>
+        <ng-container *ngIf="user; else UNAUTHENTICATED_MENU">
+          <li><a routerLink="/user">Settings</a></li>
+          <li>
+            <a role="button" (click)="onSignOut($event)">Log Out</a>
+          </li>
+        </ng-container>
+        <ng-template #UNAUTHENTICATED_MENU>
+          <li>
+            <a role="button" (click)="onSignIn($event)">Sign In</a>
+          </li>
+        </ng-template>
+      </ul>
+    </li>
+  </ul>
+</nav>

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MockComponent } from 'src/app/spec/mock';
 
-import { HomePageComponent } from './home-page.component';
+import { ViewAccountsPageComponent } from './view-accounts-page.component';
 
-describe('HomePageComponent', () => {
-  let component: HomePageComponent;
-  let fixture: ComponentFixture<HomePageComponent>;
+describe('ViewAccountsPageComponent', () => {
+  let component: ViewAccountsPageComponent;
+  let fixture: ComponentFixture<ViewAccountsPageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [HomePageComponent, MockComponent('app-header')],
+      declarations: [ViewAccountsPageComponent, MockComponent('app-header')],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HomePageComponent);
+    fixture = TestBed.createComponent(ViewAccountsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
