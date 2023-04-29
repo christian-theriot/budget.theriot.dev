@@ -30,6 +30,18 @@ jobs:
 
   backend-tests:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
@@ -46,3 +58,14 @@ jobs:
       - name: Run Tests
         run: npm t
         working-directory: backend
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          GOOGLE_CLIENT_ID: "${{ secrets.GOOGLE_CLIENT_ID }}"
+          GOOGLE_CLIENT_SECRET: "${{ secrets.GOOGLE_CLIENT_SECRET }}"
+          ALLOWED_ORIGINS: "${{ secrets.ALLOWED_ORIGINS }}"
+          SESSION_SECRET: secret
+          ENVIRONMENT: test
