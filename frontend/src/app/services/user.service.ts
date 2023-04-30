@@ -3,6 +3,7 @@ import { ElementRef, Injectable, OnDestroy } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError, of, Subscription } from 'rxjs';
 import { EventService } from './event.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService implements OnDestroy {
@@ -35,7 +36,7 @@ export class UserService implements OnDestroy {
     if (elementRef) {
       this.sub?.unsubscribe();
       this.sub = this.http
-        .get<User>('https://localhost:8443/api/auth/prelogin', {
+        .get<User>(`//${environment.BACKEND_URL}/auth/prelogin`, {
           withCredentials: true,
         })
         .subscribe({
@@ -54,7 +55,7 @@ export class UserService implements OnDestroy {
   logout() {
     this.sub?.unsubscribe();
     this.sub = this.http
-      .get('https://localhost:8443/api/auth/logout', {
+      .get(`//${environment.BACKEND_URL}/auth/logout`, {
         withCredentials: true,
         responseType: 'text',
       })
@@ -83,8 +84,7 @@ export class UserService implements OnDestroy {
       const Window = window as typeof window & { google: any };
 
       Window.google.accounts.id.initialize({
-        client_id:
-          '1039686909483-v0c4tvd7d8eg5g30fovk7gjta4o253hk.apps.googleusercontent.com',
+        client_id: environment.GOOGLE_CLIENT_ID,
         callback: ({ credential }: { credential: string }) =>
           this.onGoogleSignIn(credential),
       });
@@ -98,7 +98,7 @@ export class UserService implements OnDestroy {
     this.sub?.unsubscribe();
     this.sub = this.http
       .post<User>(
-        '//localhost:8443/api/auth/login',
+        `//${environment.BACKEND_URL}/auth/login`,
         { credential, _csrf: this.csrfTokenExtractor.getToken() },
         { withCredentials: true }
       )
