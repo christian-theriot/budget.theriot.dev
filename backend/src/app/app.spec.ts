@@ -61,7 +61,7 @@ describe("App module", () => {
     await request(app.server).get("/ip").expect(200).expect("::ffff:127.0.0.1");
   });
 
-  it("provides an auth login route at POST /api/auth/login", async () => {
+  it("provides an auth login route at POST /auth/login", async () => {
     const date = Math.floor((new Date().getTime() + 1000 * 60 * 60) / 1000);
     jest
       .spyOn(OAuth2Client.prototype, "verifyIdToken")
@@ -76,10 +76,10 @@ describe("App module", () => {
       }));
 
     await request(app.server)
-      .get("/api/auth/prelogin")
+      .get("/auth/prelogin")
       .then(async (res) => {
         await request(app.server)
-          .post("/api/auth/login")
+          .post("/auth/login")
           .set("Cookie", res.headers["set-cookie"])
           .send({
             credential: "test",
@@ -89,7 +89,7 @@ describe("App module", () => {
           .expect({ id: 1, email: "test@gmail.com" })
           .then(async (res) => {
             await request(app.server)
-              .get("/api/auth/prelogin")
+              .get("/auth/prelogin")
               .set("Cookie", res.headers["set-cookie"])
               .expect(200)
               .expect({ id: 1, email: "test@gmail.com" });
@@ -97,7 +97,7 @@ describe("App module", () => {
             jest.spyOn(console, "error").mockImplementationOnce(() => {});
 
             await request(app.server)
-              .post("/api/auth/login")
+              .post("/auth/login")
               .set("Cookie", res.headers["set-cookie"])
               .send({
                 credential: "test",
@@ -114,12 +114,12 @@ describe("App module", () => {
   });
 
   it("provides an auth logout mechanism", async () => {
-    await request(app.server).get("/api/auth/logout").expect(200).expect("OK");
+    await request(app.server).get("/auth/logout").expect(200).expect("OK");
   });
 
   it("provides an auth prelogin mechanism", async () => {
     await request(app.server)
-      .get("/api/auth/prelogin")
+      .get("/auth/prelogin")
       .expect(401)
       .expect("Unauthorized");
   });

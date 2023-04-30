@@ -103,8 +103,8 @@ export namespace UserService {
   };
 
   export function enableGoogleSignIn(app: Express) {
-    app.post("/api/auth/login", middleware.login);
-    app.get("/api/auth/prelogin", middleware.prelogin);
-    app.get("/api/auth/logout", middleware.logout);
+    app.post("/auth/login", middleware.login);
+    app.get("/auth/prelogin", middleware.prelogin);
+    app.get("/auth/logout", middleware.logout);
   }
 }
