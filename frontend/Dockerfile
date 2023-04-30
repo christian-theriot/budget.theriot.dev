@@ -8,4 +8,4 @@ RUN npm i -g @angular/cli
 
 COPY . .
 
-CMD npm run build -- --base-href https://budget.theriot.dev.com
+CMD npm run build -- --base-href https://budget.theriot.dev
